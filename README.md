@@ -41,31 +41,23 @@ To read more about how iamlive works, see [Determining AWS IAM Policies Accordin
 ### Proxy IAM Requests Through iamlive
 
 1. **Terminal #1**: Set AWS credentials
-    ```bash
-    export AWS_PROFILE=MY_AWS_PROFILE
+    ```ps1
+    $env:AWS_PROFILE = "acai_testbed"
     ```
 
-    **OR**
-    ```bash
-    export AWS_ACCESS_KEY_ID=MY_AWS_ACCESS_KEY_ID
-    ```
-    ```bash
-    export AWS_SECRET_ACCESS_KEY=MY_AWS_SECRET_ACCESS_KEY
-    ```
 1. **Terminal #1**: Set required environment variables [HTTP_PROXY, HTTPS_PROXY](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-proxy.html) and [AWS_CA_BUNDLE](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list)
-    ```bash
-    export \
-        HTTP_PROXY=http://127.0.0.1:80 \
-        HTTPS_PROXY=http://127.0.0.1:443
+    ```ps1
+        $env:HTTP_PROXY = "http://127.0.0.1:80"
+        $env:HTTPS_PROXY = "http://127.0.0.1:443"
     ```
     
     **AND**
 
-    ```bash
-    export AWS_CA_BUNDLE="${HOME}/.iamlive/ca.pem"
+    ```ps1
+    $env:AWS_CA_BUNDLE = "D:/ACAI_2x0/Repos/ACAI-Public/iamlive-docker/certificates/ca.pem"
     ```
 1. **Terminal #1**: Test it by making calls to AWS, using the CLI is the easiest way
-   ```bash
+   ```ps1
    aws s3 ls
    ```
 

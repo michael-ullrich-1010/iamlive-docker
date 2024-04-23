@@ -41,7 +41,7 @@ run-ca: genca                         ## Run iamlive-docker container for the fi
         -it "$(_DOCKER_FULL_TAG)"
 
 copy:                                 ## Copy CA certificates from iamlive-docker container
-	docker cp "$(_DOCKER_CONTAINER_NAME):/home/appuser/.iamlive/" ~/
+	docker cp "$(_DOCKER_CONTAINER_NAME):/home/appuser/.iamlive/" certificates/
 
 start:                                ## Start a stopped iamlive-docker container
 	docker start -i "$(_DOCKER_CONTAINER_NAME)"

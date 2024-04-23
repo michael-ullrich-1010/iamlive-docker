@@ -24,8 +24,26 @@ WORKDIR /app/
 COPY --from=download "/downloads/iamlive" ./
 RUN addgroup -S "appgroup" && adduser -S "appuser" -G "appgroup" && \
     chown -R "appuser:appgroup" .
+# Create entrypoint.sh directly inside the image
+RUN echo '#!/usr/bin/env bash' > /app/entrypoint.sh && \
+    echo '' >> /app/entrypoint.sh && \
+    echo 'set -e' >> /app/entrypoint.sh && \
+    echo 'set -o pipefail' >> /app/entrypoint.sh && \
+    echo '' >> /app/entrypoint.sh && \
+    echo '_FORMAT_LOGS="${FORMAT_LOGS:-"true"}"' >> /app/entrypoint.sh && \
+    echo '_ALLOWED_ADDRESS="${ALLOWED_ADDRESS:-"0.0.0.0"}"' >> /app/entrypoint.sh && \
+    echo '' >> /app/entrypoint.sh && \
+    echo 'if [[ "$_FORMAT_LOGS" = "true" ]]; then' >> /app/entrypoint.sh && \
+    echo '    /app/iamlive --output-file "/app/iamlive.log" \' >> /app/entrypoint.sh && \
+    echo '        --mode proxy --bind-addr "${_ALLOWED_ADDRESS}:10080" $@ | jq -c .' >> /app/entrypoint.sh && \
+    echo 'else' >> /app/entrypoint.sh && \
+    echo '    /app/iamlive --output-file "/app/iamlive.log" \' >> /app/entrypoint.sh && \
+    echo '        --mode proxy --bind-addr "${_ALLOWED_ADDRESS}:10080" $@' >> /app/entrypoint.sh && \
+    echo 'fi' >> /app/entrypoint.sh
+
+RUN chmod +x /app/entrypoint.sh
+
 USER "appuser"
 EXPOSE 10080
-COPY entrypoint.sh ./
 ENTRYPOINT [ "/app/entrypoint.sh" ]
 CMD [ "--force-wildcard-resource" ]
